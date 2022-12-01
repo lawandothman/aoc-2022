@@ -2,6 +2,7 @@ use itertools::Itertools;
 
 fn parse_calories(input: &str) -> Vec<Vec<u32>> {
     input
+        .trim_end()
         .split("\n\n")
         .map(|elf_rations| {
             elf_rations
