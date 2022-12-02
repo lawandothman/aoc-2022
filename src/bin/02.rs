@@ -54,14 +54,12 @@ pub fn part_two(input: &str) -> Option<u32> {
         // C - Z scissor - win
 
         score += match player {
-            "X" => {
-                0 + match opponent {
-                    "A" => 3,
-                    "B" => 1,
-                    "C" => 2,
-                    _ => panic!("Unsupported opponent choice"),
-                }
-            }
+            "X" => match opponent {
+                "A" => 3,
+                "B" => 1,
+                "C" => 2,
+                _ => panic!("Unsupported opponent choice"),
+            },
             "Y" => {
                 3 + match opponent {
                     "A" => 1,
