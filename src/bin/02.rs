@@ -47,13 +47,13 @@ pub fn part_two(input: &str) -> Option<u32> {
         let mut choices = game.split_whitespace();
 
         let opponent = choices.next().unwrap();
-        let player = choices.next().unwrap();
+        let outcome = choices.next().unwrap();
 
         // A - X rock - loss
         // B - Y paper - draw
         // C - Z scissor - win
 
-        score += match player {
+        score += match outcome {
             "X" => match opponent {
                 "A" => 3,
                 "B" => 1,
@@ -76,7 +76,7 @@ pub fn part_two(input: &str) -> Option<u32> {
                     _ => panic!("Unsupported opponent choice"),
                 }
             }
-            _ => panic!("Unsupported player choice"),
+            _ => panic!("Unsupported outcome")
         }
     }
     Some(score)
