@@ -26,11 +26,11 @@ pub fn part_two(input: &str) -> Option<u32> {
 }
 
 fn compartmentalize((a, b): (&[u32], &[u32])) -> u32 {
-    *a.into_iter().find(|x| b.contains(x)).unwrap()
+    *a.iter().find(|x| b.contains(x)).unwrap()
 }
 
 fn get_badge((a, b, c): (&[u32], &[u32], &[u32])) -> u32 {
-    *a.into_iter()
+    *a.iter()
         .find(|x| b.contains(x) && c.contains(x))
         .unwrap()
 }
