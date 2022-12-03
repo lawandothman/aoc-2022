@@ -30,9 +30,7 @@ fn compartmentalize((a, b): (&[u32], &[u32])) -> u32 {
 }
 
 fn get_badge((a, b, c): (&[u32], &[u32], &[u32])) -> u32 {
-    *a.iter()
-        .find(|x| b.contains(x) && c.contains(x))
-        .unwrap()
+    *a.iter().find(|x| b.contains(x) && c.contains(x)).unwrap()
 }
 
 fn get_priority(item_type: char) -> u32 {
