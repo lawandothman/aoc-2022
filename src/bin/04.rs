@@ -28,7 +28,32 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    None
+    Some(
+        input
+            .lines()
+            .filter(|line| {
+                let assignments = line
+                    .split(',')
+                    .map(|assignment| {
+                        assignment
+                            .split('-')
+                            .map(|n| n.parse::<u32>().unwrap())
+                            .collect::<Vec<u32>>()
+                    })
+                    .collect::<Vec<Vec<u32>>>();
+
+                let assignment_1 = assignments[0][0]..=assignments[0][1];
+                let assignment_2 = assignments[1][0]..=assignments[1][1];
+
+                assignment_1
+                    .filter(|x| assignment_2.contains(x))
+                    .next()
+                    .is_some()
+            })
+            .count()
+            .try_into()
+            .unwrap(),
+    )
 }
 
 fn main() {
@@ -50,6 +75,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let input = advent_of_code::read_file("examples", 4);
-        assert_eq!(part_two(&input), None);
+        assert_eq!(part_two(&input), Some(4));
     }
 }
