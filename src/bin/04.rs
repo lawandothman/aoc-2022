@@ -45,10 +45,7 @@ pub fn part_two(input: &str) -> Option<u32> {
                 let assignment_1 = assignments[0][0]..=assignments[0][1];
                 let assignment_2 = assignments[1][0]..=assignments[1][1];
 
-                assignment_1
-                    .filter(|x| assignment_2.contains(x))
-                    .next()
-                    .is_some()
+                assignment_1.into_iter().any(|x| assignment_2.contains(&x))
             })
             .count()
             .try_into()
