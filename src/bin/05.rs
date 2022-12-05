@@ -50,8 +50,27 @@ pub fn part_one(input: &str) -> Option<String> {
     )
 }
 
-pub fn part_two(input: &str) -> Option<u32> {
-    None
+pub fn part_two(input: &str) -> Option<String> {
+    let (mut crates, moves) = parse_input(input);
+
+    let mut tmp = VecDeque::new();
+
+    for m in moves {
+        for _ in 0..m[0] {
+            let item = crates[m[1] - 1].pop_front().unwrap();
+            tmp.push_back(item);
+        }
+        for _ in 0..m[0] {
+            let item = tmp.pop_back().unwrap();
+            crates[m[2] - 1].push_front(item);
+        }
+    }
+    Some(
+        crates
+            .into_iter()
+            .filter_map(|mut stack| stack.pop_front())
+            .collect::<String>(),
+    )
 }
 
 fn main() {
@@ -73,6 +92,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let input = advent_of_code::read_file("examples", 5);
-        assert_eq!(part_two(&input), None);
+        assert_eq!(part_two(&input), Some(String::from("MCD")));
     }
 }
