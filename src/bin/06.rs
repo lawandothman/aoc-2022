@@ -1,21 +1,23 @@
-pub fn part_one(input: &str) -> Option<usize> {
-    Some(
-        input
-            .as_bytes()
-            .windows(4)
-            .position(|slice| {
-                slice
-                    .iter()
-                    .enumerate()
-                    .all(|(i, x)| !slice[i + 1..].contains(x))
-            })
-            .unwrap()
-            + 4,
-    )
+fn solve(input: &str, window_size: usize) -> usize {
+    input
+        .as_bytes()
+        .windows(window_size)
+        .position(|slice| {
+            slice
+                .iter()
+                .enumerate()
+                .all(|(i, x)| !slice[i + 1..].contains(x))
+        })
+        .unwrap()
+        + window_size
 }
 
-pub fn part_two(input: &str) -> Option<u32> {
-    None
+pub fn part_one(input: &str) -> Option<usize> {
+    Some(solve(input, 4))
+}
+
+pub fn part_two(input: &str) -> Option<usize> {
+    Some(solve(input, 14))
 }
 
 fn main() {
@@ -37,6 +39,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let input = advent_of_code::read_file("examples", 6);
-        assert_eq!(part_two(&input), None);
+        assert_eq!(part_two(&input), Some(19));
     }
 }
