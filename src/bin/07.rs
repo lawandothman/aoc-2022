@@ -64,8 +64,21 @@ fn calculate_size(context: u64, directories: &Directories, files: &Files) -> u64
             .sum::<u64>()
 }
 
-pub fn part_one(input: &str) -> Option<u32> {
-    None
+pub fn part_one(input: &str) -> Option<u64> {
+    let (_, directories, files) = parse_input(input);
+    Some(
+        directories
+            .keys()
+            .filter_map(|x| {
+                let size = calculate_size(*x, &directories, &files);
+                if size <= 100000 {
+                    Some(size)
+                } else {
+                    None
+                }
+            })
+            .sum::<u64>(),
+    )
 }
 
 pub fn part_two(input: &str) -> Option<u64> {
@@ -107,6 +120,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let input = advent_of_code::read_file("examples", 7);
-        assert_eq!(part_two(&input), None);
+        assert_eq!(part_two(&input), Some(24933642));
     }
 }
