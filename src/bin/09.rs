@@ -20,8 +20,8 @@ fn tail(head: Point, pos: &mut Point) {
     }
 }
 
-pub fn part_one(input: &str) -> Option<usize> {
-    let mut rope = vec![(0, 0); 2];
+fn solve(input: &str, knot_count: usize) -> Option<usize> {
+    let mut rope = vec![(0, 0); knot_count];
     let mut visited = HashSet::from([(0, 0)]);
 
     for line in input.lines() {
@@ -40,8 +40,12 @@ pub fn part_one(input: &str) -> Option<usize> {
     Some(visited.len())
 }
 
-pub fn part_two(input: &str) -> Option<u32> {
-    None
+pub fn part_one(input: &str) -> Option<usize> {
+    solve(input, 2)
+}
+
+pub fn part_two(input: &str) -> Option<usize> {
+    solve(input, 10)
 }
 
 fn main() {
@@ -63,6 +67,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let input = advent_of_code::read_file("examples", 9);
-        assert_eq!(part_two(&input), None);
+        assert_eq!(part_two(&input), Some(1));
     }
 }
