@@ -11,7 +11,7 @@ fn char_to_num(c: char) -> isize {
     c as isize - 'a' as isize
 }
 
-pub fn part_one(input: &str) -> Option<isize> {
+fn parse_input(input: &str) -> Map {
     let mut map = Map {
         elevations: Vec::new(),
         start: (0, 0),
@@ -33,6 +33,11 @@ pub fn part_one(input: &str) -> Option<isize> {
         }
         map.elevations.push(row);
     }
+    map
+}
+
+pub fn part_one(input: &str) -> Option<isize> {
+    let map = parse_input(input);
     let (n, m) = (map.elevations.len(), map.elevations[0].len());
     let mut visited = vec![vec![-1; m]; n];
     let mut positions = vec![map.end];
@@ -74,8 +79,47 @@ pub fn part_one(input: &str) -> Option<isize> {
     }
 }
 
-pub fn part_two(input: &str) -> Option<u32> {
-    None
+pub fn part_two(input: &str) -> Option<isize> {
+    let map = parse_input(input);
+    let (n, m) = (map.elevations.len(), map.elevations[0].len());
+    let mut visited = vec![vec![-1; m]; n];
+    let mut positions = vec![map.end];
+    let mut next = Vec::new();
+    let mut step = -1;
+
+    let neighbours = |i, j| {
+        let mut positions = Vec::new();
+        if i > 0 {
+            positions.push((i - 1, j));
+        }
+        if j > 0 {
+            positions.push((i, j - 1));
+        }
+        if i < n - 1 {
+            positions.push((i + 1, j))
+        }
+        if j < m - 1 {
+            positions.push((i, j + 1))
+        }
+        positions
+    };
+    visited[map.end.0][map.end.1] = 0;
+
+    loop {
+        step += 1;
+        for (i, j) in positions.drain(..) {
+            if map.elevations[i][j] == 0 {
+                return Some(step);
+            }
+            for (ni, nj) in neighbours(i, j) {
+                if visited[ni][nj] == -1 && map.elevations[i][j] - map.elevations[ni][nj] <= 1 {
+                    visited[ni][nj] = step;
+                    next.push((ni, nj));
+                }
+            }
+        }
+        swap(&mut next, &mut positions);
+    }
 }
 
 fn main() {
@@ -97,6 +141,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let input = advent_of_code::read_file("examples", 12);
-        assert_eq!(part_two(&input), None);
+        assert_eq!(part_two(&input), Some(29));
     }
 }
