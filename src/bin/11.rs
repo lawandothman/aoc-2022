@@ -39,8 +39,19 @@ impl Monkey {
         }
     }
 
-    fn inspect(&self, item: usize) -> (usize, usize) {
+    fn inspect_1(&self, item: usize) -> (usize, usize) {
         let worry = self.next(item) / 3;
+        let next_monkey = if (worry % self.test) == 0 {
+            self.true_monkey
+        } else {
+            self.false_monkey
+        };
+
+        (next_monkey, worry)
+    }
+
+    fn inspect_2(&self, item: usize, worry_divisor: usize) -> (usize, usize) {
+        let worry = self.next(item) % worry_divisor;
         let next_monkey = if (worry % self.test) == 0 {
             self.true_monkey
         } else {
@@ -51,7 +62,7 @@ impl Monkey {
     }
 }
 
-pub fn part_one(input: &str) -> Option<usize> {
+fn parse_input(input: &str) -> Vec<Monkey> {
     let mut monkeys = Vec::new();
     for round in input.split("\n\n") {
         let mut line = round.split('\n');
@@ -93,22 +104,23 @@ pub fn part_one(input: &str) -> Option<usize> {
             false_monkey,
         ))
     }
+    monkeys
+}
 
+pub fn part_one(input: &str) -> Option<usize> {
+    let mut monkeys = parse_input(input);
     for _ in 0..20 {
         for m in 0..monkeys.len() {
-            {
-                let mut monkey = &mut monkeys[m];
-                monkey.inspected += monkey.items.len();
-            }
+            let mut monkey = &mut monkeys[m];
+            monkey.inspected += monkey.items.len();
 
             let mut in_transit = Vec::new();
-            {
-                let curr = &mut monkeys[m];
-                for item in curr.items.iter() {
-                    in_transit.push(curr.inspect(*item))
-                }
-                curr.items.clear();
+
+            let curr = &mut monkeys[m];
+            for item in curr.items.iter() {
+                in_transit.push(curr.inspect_1(*item))
             }
+            curr.items.clear();
 
             for (next_monkey, worry) in in_transit.iter() {
                 monkeys[*next_monkey].items.push(*worry)
@@ -120,8 +132,31 @@ pub fn part_one(input: &str) -> Option<usize> {
     Some(monkeys[0].inspected * monkeys[1].inspected)
 }
 
-pub fn part_two(input: &str) -> Option<u32> {
-    None
+pub fn part_two(input: &str) -> Option<usize> {
+    let mut monkeys = parse_input(input);
+    let worry_mod = monkeys.iter().fold(1, |acc, monkey| acc * monkey.test);
+    for _ in 0..10_000 {
+        for m in 0..monkeys.len() {
+            let mut monkey = &mut monkeys[m];
+            monkey.inspected += monkey.items.len();
+
+            let mut in_transit = Vec::new();
+
+            let curr = &mut monkeys[m];
+
+            for item in curr.items.iter() {
+                in_transit.push(curr.inspect_2(*item, worry_mod))
+            }
+            curr.items.clear();
+
+            for (next_monkey, worry) in in_transit.iter() {
+                monkeys[*next_monkey].items.push(*worry)
+            }
+        }
+    }
+
+    monkeys.sort_by(|x, y| y.inspected.cmp(&x.inspected));
+    Some(monkeys[0].inspected * monkeys[1].inspected)
 }
 
 fn main() {
@@ -143,6 +178,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let input = advent_of_code::read_file("examples", 11);
-        assert_eq!(part_two(&input), None);
+        assert_eq!(part_two(&input), Some(2713310158));
     }
 }
