@@ -76,14 +76,18 @@ impl PartialOrd for Packet {
     }
 }
 
+fn parse_packets(input: &str) -> Vec<Packet> {
+    input
+        .lines()
+        .map(|x| x.trim())
+        .filter(|l| !l.is_empty())
+        .map(|x| x.parse::<Packet>().unwrap())
+        .collect::<Vec<Packet>>()
+}
+
 pub fn part_one(input: &str) -> Option<usize> {
     Some(
-        input
-            .lines()
-            .map(|x| x.trim())
-            .filter(|l| !l.is_empty())
-            .map(|x| x.parse::<Packet>().unwrap())
-            .collect::<Vec<Packet>>()
+        parse_packets(input)
             .chunks(2)
             .enumerate()
             .filter_map(
@@ -96,8 +100,13 @@ pub fn part_one(input: &str) -> Option<usize> {
     )
 }
 
-pub fn part_two(input: &str) -> Option<u32> {
-    None
+pub fn part_two(input: &str) -> Option<usize> {
+    let mut packets = parse_packets(input);
+    packets.sort_unstable();
+    let x = packets.binary_search(&Packet::Int(2)).unwrap_err() + 1;
+    let y = packets.binary_search(&Packet::Int(6)).unwrap_err() + 2;
+
+    Some(x * y)
 }
 
 fn main() {
@@ -119,6 +128,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let input = advent_of_code::read_file("examples", 13);
-        assert_eq!(part_two(&input), None);
+        assert_eq!(part_two(&input), Some(140));
     }
 }
