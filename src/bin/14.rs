@@ -34,7 +34,6 @@ fn parse_input(input: &str) -> (HashSet<(usize, usize)>, usize) {
 }
 
 pub fn part_one(input: &str) -> Option<usize> {
-    let has_floor = false;
     let (mut blocked, floor) = parse_input(input);
     let count = blocked.len();
     let mut q = Vec::new();
