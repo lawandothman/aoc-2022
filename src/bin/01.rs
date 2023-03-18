@@ -1,36 +1,31 @@
+use std::cmp::Reverse;
+
 use itertools::Itertools;
 
-fn parse_calories(input: &str) -> Vec<Vec<u32>> {
-    input
-        .trim_end()
-        .split("\n\n")
-        .map(|elf_rations| {
-            elf_rations
-                .split('\n')
-                .map(|rations| rations.parse().expect("Failed to parse calorie"))
-                .collect()
-        })
-        .collect()
-}
-
 pub fn part_one(input: &str) -> Option<u32> {
-    Some(
-        parse_calories(input)
-            .iter()
-            .map(|elf_rations| elf_rations.iter().sum())
-            .max()
-            .expect("Input was empty"),
-    )
+    input
+        .lines()
+        .map(|c| c.parse::<u32>().ok())
+        .batching(|it| {
+            let mut sum = None;
+            while let Some(Some(c)) = it.next() {
+                sum = Some(sum.unwrap_or(0) + c)
+            }
+            sum
+        })
+        .max()
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
     Some(
-        parse_calories(input)
-            .iter()
-            .map(|elf_rations| elf_rations.iter().sum())
-            .sorted_unstable_by(|a: &u32, b: &u32| Ord::cmp(b, a))
-            .take(3)
-            .sum(),
+        input
+            .lines()
+            .map(|c| c.parse::<u32>().ok())
+            .batching(|it| it.map_while(|x| x).sum1::<u32>())
+            .map(Reverse)
+            .k_smallest(3)
+            .map(|x| x.0)
+            .sum::<u32>(),
     )
 }
 
