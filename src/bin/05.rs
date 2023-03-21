@@ -3,7 +3,7 @@ use std::collections::VecDeque;
 use itertools::Itertools;
 
 fn parse_input(input: &str) -> (Vec<VecDeque<char>>, Vec<Vec<usize>>) {
-    let (crates, moves) = input.split("\n\n").into_iter().collect_tuple().unwrap();
+    let (crates, moves) = input.split("\n\n").collect_tuple().unwrap();
 
     let crates = crates
         .lines()
